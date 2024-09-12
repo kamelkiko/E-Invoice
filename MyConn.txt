@@ -1,0 +1,3 @@
+jdbc:sqlserver://KAMEL\\MSSQLSERVER2019:1434;databaseName=FposTerr;user=sa;password=CounterPoint8;TrustServerCertificate=true;Integrated Security=True
+sa
+CounterPoint8
