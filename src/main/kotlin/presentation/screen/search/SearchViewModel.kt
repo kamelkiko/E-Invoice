@@ -10,9 +10,12 @@ import io.github.evanrupert.excelkt.workbook
 import kotlinx.coroutines.*
 import org.apache.poi.ss.usermodel.FillPatternType
 import org.apache.poi.ss.usermodel.IndexedColors
+import org.apache.poi.ss.usermodel.WorkbookFactory
 import presentation.base.BaseViewModel
 import presentation.base.ErrorState
 import java.awt.Desktop
+import java.awt.FileDialog
+import java.awt.Frame
 import java.io.File
 import java.math.BigDecimal
 import kotlin.math.ceil
@@ -177,6 +180,49 @@ class SearchViewModel(
 
     override fun onClickImport() {
         updateState { it.copy(isLoadingImport = true) }
+        val uuids = mutableListOf<String>()
+        val file = chooseExcelFile()
+        file?.let {
+            viewModelScope.launch(Dispatchers.Default) {
+                val workbook = WorkbookFactory.create(file)
+                val sheet = workbook.getSheetAt(0)
+                val headerRow = sheet.getRow(0)
+                var uuidColumnIndex = -1
+                for (cell in headerRow) {
+                    if (cell.stringCellValue == "UUID") {
+                        uuidColumnIndex = cell.columnIndex
+                        break
+                    }
+                }
+                if (uuidColumnIndex == -1) {
+                    updateState { it.copy(isSnackBarVisible = true, snackBarTitle = "UUID column not found!") }
+                }
+                for (row in sheet) {
+                    if (row.rowNum == 0) continue
+                    val cell = row.getCell(uuidColumnIndex)
+                    if (cell != null && cell.cellType == org.apache.poi.ss.usermodel.CellType.STRING) {
+                        uuids.add(cell.stringCellValue)
+                    }
+                }
+                workbook.close()
+                updateState { it.copy(isLoadingImport = false, uuids = uuids) }
+            }
+        }
+        updateState { it.copy(isLoadingImport = false) }
+    }
+
+    private fun chooseExcelFile(): File? {
+        val frame = Frame()
+        val dialog = FileDialog(frame, "Select Excel File", FileDialog.LOAD)
+        dialog.file = "*.xlsx;*.xls" // Filter for Excel files
+        dialog.isVisible = true
+        val selectedFile = dialog.file?.let { "${dialog.directory}$it" }
+        frame.dispose()
+        return selectedFile?.let { File(it) }
+    }
+
+    override fun onClickExportAll() {
+        updateState { it.copy(isLoadingExportAll = true) }
         viewModelScope.launch(Dispatchers.Default) {
             workbook {
                 sheet("Receipts") {
@@ -214,10 +260,6 @@ class SearchViewModel(
                 )
             }
         }
-    }
-
-    override fun onClickExportAll() {
-
     }
 
     override fun onClickSearch() {

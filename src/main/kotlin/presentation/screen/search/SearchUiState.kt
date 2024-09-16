@@ -25,6 +25,7 @@ data class SearchUiState(
     val isSnackBarSuccessVisible: Boolean = false,
     val snackBarSuccessTitle: String? = null,
     val uuid: String = "",
+    val uuids: List<String> = emptyList(),
 ) {
     val tabHeader
         @Composable get() = listOf(

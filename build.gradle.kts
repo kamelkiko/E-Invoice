@@ -71,6 +71,7 @@ dependencies {
     implementation("com.vladsch.kotlin-jdbc:kotlin-jdbc:0.5.0")
     // Excel
     implementation("io.github.evanrupert:excelkt:1.0.2")
+    implementation("org.apache.poi:poi-ooxml:5.2.3")
 }
 
 compose.desktop {
