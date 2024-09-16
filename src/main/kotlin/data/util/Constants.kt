@@ -2,6 +2,7 @@ package data.util
 
 import kotlinx.coroutines.flow.MutableStateFlow
 import presentation.screen.history.HistoryDetailsUiState
+import presentation.screen.search.SearchDetailsUiState
 import util.LanguageCode
 import java.math.BigDecimal
 
@@ -32,6 +33,22 @@ data class HistoryData(
     val status: String = "Unknown",
 ) {
     fun toHistoryDetailsUiState(): HistoryDetailsUiState = HistoryDetailsUiState(
+        uuid = uuid,
+        submitUUID = submitUUID,
+        dateTimeIssued = dateTimeIssued,
+        dateTimeReceived = dateTimeReceived,
+        receiptNumber = receiptNumber,
+        totalSales = totalSales,
+        totalCommercialDiscount = totalCommercialDiscount,
+        netAmount = netAmount,
+        feesAmount = feesAmount,
+        totalAmount = totalAmount,
+        taxTotals = taxTotals,
+        storeName = storeName,
+        status = status
+    )
+
+    fun toSearchDetailsUiState(): SearchDetailsUiState = SearchDetailsUiState(
         uuid = uuid,
         submitUUID = submitUUID,
         dateTimeIssued = dateTimeIssued,

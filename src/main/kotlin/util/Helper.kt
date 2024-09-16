@@ -24,10 +24,10 @@ object BigDecimalSerializer : KSerializer<BigDecimal> {
         PrimitiveSerialDescriptor("BigDecimal", PrimitiveKind.DOUBLE)
 
     override fun serialize(encoder: Encoder, value: BigDecimal) {
-        encoder.encodeDouble(value.toDouble()) // Serialize as a string
+        encoder.encodeDouble(value.toDouble())
     }
 
     override fun deserialize(decoder: Decoder): BigDecimal {
-        return BigDecimal(decoder.decodeString()) // Deserialize from a string
+        return BigDecimal(decoder.decodeString())
     }
 }

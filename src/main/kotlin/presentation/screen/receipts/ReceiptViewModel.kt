@@ -37,7 +37,7 @@ class ReceiptViewModel(
     override val viewModelScope: CoroutineScope get() = screenModelScope
 
     private fun getReceipts() {
-        updateState { it.copy(isLoading = true, hasConnection = true) }
+        updateState { it.copy(isLoading = true, hasConnection = true, selectedReceipts = emptyList()) }
         tryToExecute(
             {
                 state.value.run {
@@ -64,7 +64,8 @@ class ReceiptViewModel(
             it.copy(
                 pageInfo = receipts.toDetailsUiState(),
                 isLoading = false,
-                hasConnection = true
+                hasConnection = true,
+                selectedReceipts = emptyList()
             )
         }
         if (state.value.currentPage > state.value.pageInfo.totalPages && receipts.toDetailsUiState().data.isNotEmpty()) {
@@ -90,6 +91,7 @@ class ReceiptViewModel(
                     it.copy(
                         isSnackBarVisible = true,
                         snackBarTitle = error.message ?: "",
+                        selectedReceipts = emptyList(),
                     )
                 }
             }
@@ -117,6 +119,7 @@ class ReceiptViewModel(
                     it.copy(
                         isSnackBarVisible = true,
                         snackBarTitle = error.message ?: "",
+                        selectedReceipts = emptyList(),
                     )
                 }
             }
@@ -125,6 +128,7 @@ class ReceiptViewModel(
                 it.copy(
                     isSnackBarVisible = true,
                     snackBarTitle = "Something happened please try again!",
+                    selectedReceipts = emptyList(),
                 )
             }
         }
@@ -292,9 +296,11 @@ class ReceiptViewModel(
                     updateState {
                         it.copy(
                             isSnackBarSuccessVisible = true,
-                            snackBarSuccessTitle = "Receipts sent successfully, please check your history"
+                            snackBarSuccessTitle = "Receipts sent successfully, please check your history",
+                            selectedReceipts = emptyList()
                         )
                     }
+                    updateState { it.copy(selectedReceipts = emptyList()) }
                     getReceipts()
                 }
             },
