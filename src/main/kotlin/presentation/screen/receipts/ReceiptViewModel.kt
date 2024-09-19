@@ -249,7 +249,7 @@ class ReceiptViewModel(
                                 val query0 = sqlQuery("DISABLE TRIGGER FposCheckIU ON dbo.FposCheck;")
                                 session.execute(query0)
                                 val query1 =
-                                    sqlQuery("insert into dbo.CheckUUID(UUID,Submit_UUID,receiptNumber,dateMade) values('${document.uuid}','${submit.submissionId},${document.receiptNumber},${state.value.selectedReceipts.first { document.receiptNumber == it.header.receiptNumber }.header.dateTimeIssued})';")
+                                    sqlQuery("insert into dbo.CheckUUID(UUID,Submit_UUID,receiptNumber,dateMade) values('${document.uuid}','${submit.submissionId}','${document.receiptNumber}','${state.value.selectedReceipts.first { document.receiptNumber == it.header.receiptNumber }.header.dateTimeIssued}')")
                                 session.execute(query1)
                                 val query2 = sqlQuery("update dbo.Stores set last_uuid = '${document.uuid}';")
                                 session.execute(query2)
@@ -402,8 +402,4 @@ class ReceiptViewModel(
             )
         }
     }
-}
-
-private fun canConvertToInt(number: Double): Boolean {
-    return number % 1 == 0.0
 }

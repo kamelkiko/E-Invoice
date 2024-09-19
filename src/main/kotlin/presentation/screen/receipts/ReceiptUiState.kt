@@ -102,7 +102,7 @@ data class HeaderUiState(
         val parsedDateTime = LocalDateTime.parse(originalDate.replace(" ", "T").removeSuffix(".0"))
         val instant = parsedDateTime.toInstant(TimeZone.UTC)
         return Header(
-            dateTimeIssued = "2024-09-10T23:42:00Z",
+            dateTimeIssued = instant.toString(),
             receiptNumber = receiptNumber,
             uuid = uuid,
             previousUUID = previousUUID,
