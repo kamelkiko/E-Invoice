@@ -57,18 +57,18 @@ class AuthGateway(
     }
 
     @Throws(EmptyDataException::class)
-    override suspend fun getStoreCardEntails(storeId: Int): StoreAuth {
+    override suspend fun getStoreCardEntails(storeId: String): StoreAuth {
         return try {
             val list = mutableListOf<StoreAuth>()
-            val data = getData("select * from dbo.Store where Store_ID = $storeId")
+            val data = getData("select * from dbo.Store")
             if (data.isSuccess) {
                 data.getOrNull()?.forEach { row ->
                     list.add(
                         StoreAuth(
-                            posSerial = row["device_serial"]?.toString() ?: "",
-                            posOsVersion = row["os"]?.toString() ?: "",
-                            clientId = row["client_id"]?.toString() ?: "",
-                            clientSecret = row["secret_1"]?.toString() ?: ""
+                            posSerial = "PSH71206",
+                            posOsVersion = "Windows",
+                            clientId = "ba3f5560-5608-4c55-923d-917cc2966e5a",
+                            clientSecret = "195a5190-d9ce-422c-98dc-bc30b4885a21"
                         )
                     )
                 } ?: throw EmptyDataException("Empty store")

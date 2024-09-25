@@ -11,14 +11,14 @@ object AppLanguage {
 }
 
 object AppConstants {
-    var storeId: Int = 2
-    var storeName: String = "TERRENAL"
+    var storeId: String = "001"
+    var storeName: String = "Esca Heliopolis"
     var isAdmin = false
     var historyData = mutableListOf<HistoryData>()
 }
 
 data class HistoryData(
-    val uuid: String = "56c8392adbe378c612a464b30f1298e1d48f258d580883b8bce0e29f89c2e0c5",
+    val uuid: String = "",
     val submitUUID: String = "",
     val dateTimeIssued: String = "",
     val dateTimeReceived: String = "",

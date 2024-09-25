@@ -27,7 +27,9 @@ object MainApp : Screen {
 
         val appViewModel = koinScreenModel<AppViewModel>()
         val userLanguage by appViewModel.state.collectAsState()
+
         EInvoiceTheme(languageCode = userLanguage) {
+//            LudoGame()
             Box(
                 Modifier.fillMaxSize().background(Theme.colors.background),
             ) {

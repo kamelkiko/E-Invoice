@@ -127,7 +127,7 @@ class MainViewModel(
     }
 
     override fun onClickActive() {
-        if (AppConstants.storeId == -1) updateState {
+        if (AppConstants.storeId == "-1") updateState {
             it.copy(
                 error = ErrorState.UnknownError("Please choose store first"),
                 isSnackBarVisible = true,

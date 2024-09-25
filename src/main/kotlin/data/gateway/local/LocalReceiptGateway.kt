@@ -9,7 +9,7 @@ import domain.util.UnknownErrorException
 import java.math.BigDecimal
 
 class LocalReceiptGateway : IReceiptGateway {
-    override suspend fun getAllReceipts(storeId: Int, dateFrom: String, dateTo: String): List<Receipt> {
+    override suspend fun getAllReceipts(storeId: String, dateFrom: String, dateTo: String): List<Receipt> {
         return try {
             val list = mutableListOf<Receipt>()
             val data = getData(
@@ -22,7 +22,6 @@ class LocalReceiptGateway : IReceiptGateway {
                         "    pd.status,\n" +
                         "    pt.Perc,\n" +
                         "    pd.Store_ID,\n" +
-                        "    s.Name,\n" +
                         "    pd.totalAmount,\n" +
                         "    pd.Tax As TotalTax,\n" +
                         "    pd.currency,\n" +
@@ -46,20 +45,7 @@ class LocalReceiptGateway : IReceiptGateway {
                         "    pb.name AS BuyerName,\n" +
                         "    pb.mobileNumber AS BuyerMobileNumber,\n" +
                         "\n" +
-                        "    ps.rin,\n" +
-                        "    ps.companyTradeName,\n" +
-                        "    ps.country,\n" +
-                        "    ps.branchCode,\n" +
-                        "    ps.governate,\n" +
-                        "    ps.regionCity,\n" +
-                        "    ps.street,\n" +
-                        "    ps.activityCode,\n" +
-                        "    ps.buildingNumber,\n" +
-                        "    ps.postalCode,\n" +
-                        "    ps.floor,\n" +
-                        "    ps.room,\n" +
-                        "    ps.device_serial,\n" +
-                        "    s.last_uuid,\n" +
+                        " (select (COALESCE(last_uuid,'')) from dbo.Stores) as last_uuid,\n" +
                         "\n" +
                         "    pl.description,\n" +
                         "    pl.itemType,\n" +
@@ -79,19 +65,14 @@ class LocalReceiptGateway : IReceiptGateway {
                         "FROM \n" +
                         "    dbo.pos_document pd\n" +
                         "LEFT JOIN \n" +
-                        "    dbo.Store s ON pd.Store_ID = s.Store_ID\n" +
-                        "LEFT JOIN \n" +
                         "    dbo.Pos_Tax pt ON pd.INVC_ID = pt.INVC_ID\n" +
                         "LEFT JOIN \n" +
                         "    dbo.Pos_buyer pb ON pd.INVC_ID = pb.INVC_ID\n" +
                         "LEFT JOIN \n" +
-                        "    dbo.pos_seller ps ON pd.Store_ID = ps.Store_ID\n" +
-                        "LEFT JOIN \n" +
                         "    dbo.pos_liens pl ON pd.INVC_ID = pl.INVC_ID\n" +
                         "WHERE \n" +
-                        "    pd.Store_ID = $storeId\n" +
+                        "    pd.Store_ID = $storeId \n" +
                         "   and pd.dateTimeIssued between '$dateFrom 00:00:00.000' and '$dateTo 23:59:59.000'\n"
-                //  "    AND (pd.submissionid IS NOT NULL OR pd.submissionid <> '') "
             )
             if (data.isSuccess) {
                 val receiptsMap = mutableMapOf<String, MutableList<Map<String, Any?>>>()
@@ -108,7 +89,7 @@ class LocalReceiptGateway : IReceiptGateway {
                         ItemData(
                             description = row["description"]?.toString() ?: "",
                             itemType = row["itemType"]?.toString() ?: "",
-                            itemCode = row["itemCode"]?.toString() ?: "",
+                            itemCode = "EG-537315942-25162411",
                             unitType = row["unitType"]?.toString() ?: "",
                             quantity = row["quantity"]?.toString()?.toBigDecimalOrNull() ?: BigDecimal(0.0),
                             unitPrice = row["unitPrice"]?.toString()?.toBigDecimalOrNull() ?: BigDecimal(0.0),
@@ -145,7 +126,6 @@ class LocalReceiptGateway : IReceiptGateway {
                                 currency = firstRow["currency"]?.toString() ?: "",
                                 exchangeRate = 0,
                                 sOrderNameCode = firstRow["sOrderNameCode"]?.toString() ?: "",
-                                // orderDeliveryMode = firstRow["orderdeliveryMode"]?.toString() ?: "",
                                 grossWeight = firstRow["grossWeight"]?.toString()?.toIntOrNull() ?: 0,
                                 netWeight = firstRow["netWeight"]?.toString()?.toIntOrNull() ?: 0,
                             ),
@@ -154,24 +134,24 @@ class LocalReceiptGateway : IReceiptGateway {
                                 typeVersion = firstRow["typeVersion"]?.toString() ?: "",
                             ),
                             seller = Seller(
-                                rin = firstRow["rin"]?.toString() ?: "",
-                                companyTradeName = firstRow["companyTradeName"]?.toString() ?: "",
-                                branchCode = firstRow["branchCode"]?.toString() ?: "",
+                                rin = "537315942",
+                                companyTradeName = "شركه حجى للمطاعم",
+                                branchCode = "1",
                                 branchAddress = BranchAddress(
-                                    country = firstRow["country"]?.toString() ?: "",
-                                    governate = firstRow["governate"]?.toString() ?: "",
-                                    regionCity = firstRow["regionCity"]?.toString() ?: "",
-                                    street = firstRow["street"]?.toString() ?: "",
-                                    buildingNumber = firstRow["buildingNumber"]?.toString() ?: "",
-                                    postalCode = firstRow["postalCode"]?.toString() ?: "",
-                                    floor = firstRow["floor"]?.toString() ?: "",
-                                    room = firstRow["room"]?.toString() ?: "",
+                                    country = "EG",
+                                    governate = "Cairo",
+                                    regionCity = "Heliopolis",
+                                    street = "4 Al Badia St. - Al Thawra St. - Heliopolis",
+                                    buildingNumber = "1",
+                                    postalCode = "1",
+                                    floor = "1",
+                                    room = "1",
                                     landmark = "",
                                     additionalInformation = "",
                                 ),
-                                deviceSerialNumber = firstRow["device_serial"]?.toString() ?: "",
+                                deviceSerialNumber = "PSH71206",
                                 syndicateLicenseNumber = "",
-                                activityCode = firstRow["activityCode"]?.toString() ?: "",
+                                activityCode = "5610",
                             ),
                             buyer = Buyer(
                                 type = firstRow["BuyerType"]?.toString() ?: "",

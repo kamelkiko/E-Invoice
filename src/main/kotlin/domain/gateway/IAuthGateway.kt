@@ -11,6 +11,6 @@ interface IAuthGateway {
     ): String
 
     suspend fun getStoreCardEntails(
-        storeId: Int,
+        storeId: String,
     ): StoreAuth
 }

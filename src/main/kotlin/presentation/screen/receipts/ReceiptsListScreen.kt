@@ -196,7 +196,8 @@ class ReceiptsListScreen : Screen {
                         onClick = receiptViewModel::onClickSend,
                         textPadding = PaddingValues(horizontal = 24.kms),
                         modifier = Modifier.cursorHoverIconHand(),
-                        isLoading = state.isLoadingSend
+                        isLoading = state.isLoadingSend,
+                        enabled = state.selectedReceipts.isNotEmpty()
                     )
                 }
                 EITable(
