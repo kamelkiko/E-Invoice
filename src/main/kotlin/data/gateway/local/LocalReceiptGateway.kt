@@ -91,12 +91,17 @@ class LocalReceiptGateway : IReceiptGateway {
                             itemType = row["itemType"]?.toString() ?: "",
                             itemCode = "EG-537315942-25162411",
                             unitType = row["unitType"]?.toString() ?: "",
-                            quantity = row["quantity"]?.toString()?.toBigDecimalOrNull() ?: BigDecimal(0.0),
-                            unitPrice = row["unitPrice"]?.toString()?.toBigDecimalOrNull() ?: BigDecimal(0.0),
+                            quantity = row["quantity"]?.toString()?.toBigDecimalOrNull()?.setScale(5)
+                                ?: BigDecimal(0.0),
+                            unitPrice = row["unitPrice"]?.toString()?.toBigDecimalOrNull()?.setScale(5) ?: BigDecimal(
+                                0.0
+                            ),
                             internalCode = row["internalCode"]?.toString() ?: "",
-                            totalSale = row["totalSale"]?.toString()?.toBigDecimalOrNull() ?: BigDecimal(0.0),
-                            netSale = row["netSale"]?.toString()?.toBigDecimalOrNull() ?: BigDecimal(0.0),
-                            total = row["total"]?.toString()?.toBigDecimalOrNull() ?: BigDecimal(0.0),
+                            totalSale = row["totalSale"]?.toString()?.toBigDecimalOrNull()?.setScale(5) ?: BigDecimal(
+                                0.0
+                            ),
+                            netSale = row["netSale"]?.toString()?.toBigDecimalOrNull()?.setScale(5) ?: BigDecimal(0.0),
+                            total = row["total"]?.toString()?.toBigDecimalOrNull()?.setScale(5) ?: BigDecimal(0.0),
                             itemDiscountData = emptyList(),
                             commercialDiscountData = listOf(
                                 CommercialDiscountData(
@@ -108,7 +113,8 @@ class LocalReceiptGateway : IReceiptGateway {
                             taxableItems = listOf(
                                 TaxableItem(
                                     taxType = row["Tax_Type"]?.toString() ?: "",
-                                    amount = row["Tax"]?.toString()?.toBigDecimalOrNull() ?: BigDecimal(0.0),
+                                    amount = row["Tax"]?.toString()?.toBigDecimalOrNull()?.setScale(5)
+                                        ?: BigDecimal(0.0),
                                     subType = row["Tax_SubType"]?.toString() ?: "",
                                     rate = row["Perc_Tax"]?.toString()?.toDoubleOrNull() ?: 0.0
                                 )
@@ -160,16 +166,19 @@ class LocalReceiptGateway : IReceiptGateway {
                                 mobileNumber = firstRow["BuyerMobileNumber"]?.toString() ?: "",
                             ),
                             itemData = items,
-                            totalSales = firstRow["totalSales"]?.toString()?.toBigDecimalOrNull() ?: BigDecimal(0.0),
+                            totalSales = firstRow["totalSales"]?.toString()?.toBigDecimalOrNull()?.setScale(5)
+                                ?: BigDecimal(0.0),
                             totalCommercialDiscount = firstRow["totalCommercialDiscount"]?.toString()
                                 ?.toBigDecimalOrNull() ?: BigDecimal(0.0),
                             netAmount = firstRow["netAmount"]?.toString()?.toBigDecimalOrNull() ?: BigDecimal(0.0),
                             feesAmount = firstRow["feesAmount"]?.toString()?.toDoubleOrNull() ?: 0.0,
-                            totalAmount = firstRow["totalAmount"]?.toString()?.toBigDecimalOrNull() ?: BigDecimal(0.0),
+                            totalAmount = firstRow["totalAmount"]?.toString()?.toBigDecimalOrNull()?.setScale(5)
+                                ?: BigDecimal(0.0),
                             taxTotals = listOf(
                                 TaxTotal(
                                     taxType = firstRow["Tax_Type"]?.toString() ?: "",
-                                    amount = firstRow["TotalTax"]?.toString()?.toBigDecimalOrNull() ?: BigDecimal(0.0),
+                                    amount = firstRow["TotalTax"]?.toString()?.toBigDecimalOrNull()?.setScale(5)
+                                        ?: BigDecimal(0.0),
                                 )
                             ),
                             paymentMethod = "C",
