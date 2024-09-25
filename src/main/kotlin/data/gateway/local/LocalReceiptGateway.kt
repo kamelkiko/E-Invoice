@@ -83,7 +83,7 @@ class LocalReceiptGateway : IReceiptGateway {
                     }
                     receiptsMap[invoiceId]?.add(row)
                 } ?: throw EmptyDataException("Empty Invoices")
-                receiptsMap.map { (invoiceId, rows) ->
+                receiptsMap.map { (_, rows) ->
                     val firstRow = rows.first()
                     val items = rows.map { row ->
                         ItemData(
@@ -91,17 +91,23 @@ class LocalReceiptGateway : IReceiptGateway {
                             itemType = row["itemType"]?.toString() ?: "",
                             itemCode = "EG-537315942-25162411",
                             unitType = row["unitType"]?.toString() ?: "",
-                            quantity = row["quantity"]?.toString()?.toBigDecimalOrNull()?.setScale(5)
+                            quantity = row["quantity"]?.toString()?.toBigDecimalOrNull()
+                                ?.setScale(5, BigDecimal.ROUND_HALF_UP)
                                 ?: BigDecimal(0.0),
-                            unitPrice = row["unitPrice"]?.toString()?.toBigDecimalOrNull()?.setScale(5) ?: BigDecimal(
+                            unitPrice = row["unitPrice"]?.toString()?.toBigDecimalOrNull()
+                                ?.setScale(5, BigDecimal.ROUND_HALF_UP) ?: BigDecimal(
                                 0.0
                             ),
                             internalCode = row["internalCode"]?.toString() ?: "",
-                            totalSale = row["totalSale"]?.toString()?.toBigDecimalOrNull()?.setScale(5) ?: BigDecimal(
+                            totalSale = row["totalSale"]?.toString()?.toBigDecimalOrNull()
+                                ?.setScale(5, BigDecimal.ROUND_HALF_UP) ?: BigDecimal(
                                 0.0
                             ),
-                            netSale = row["netSale"]?.toString()?.toBigDecimalOrNull()?.setScale(5) ?: BigDecimal(0.0),
-                            total = row["total"]?.toString()?.toBigDecimalOrNull()?.setScale(5) ?: BigDecimal(0.0),
+                            netSale = row["netSale"]?.toString()?.toBigDecimalOrNull()
+                                ?.setScale(5, BigDecimal.ROUND_HALF_UP) ?: BigDecimal(0.0),
+                            total = row["total"]?.toString()?.toBigDecimalOrNull()
+                                ?.setScale(5, BigDecimal.ROUND_HALF_UP)
+                                ?: BigDecimal(0.0),
                             itemDiscountData = emptyList(),
                             commercialDiscountData = listOf(
                                 CommercialDiscountData(
@@ -113,7 +119,8 @@ class LocalReceiptGateway : IReceiptGateway {
                             taxableItems = listOf(
                                 TaxableItem(
                                     taxType = row["Tax_Type"]?.toString() ?: "",
-                                    amount = row["Tax"]?.toString()?.toBigDecimalOrNull()?.setScale(5)
+                                    amount = row["Tax"]?.toString()?.toBigDecimalOrNull()
+                                        ?.setScale(5, BigDecimal.ROUND_HALF_UP)
                                         ?: BigDecimal(0.0),
                                     subType = row["Tax_SubType"]?.toString() ?: "",
                                     rate = row["Perc_Tax"]?.toString()?.toDoubleOrNull() ?: 0.0
@@ -145,9 +152,9 @@ class LocalReceiptGateway : IReceiptGateway {
                                 branchCode = "1",
                                 branchAddress = BranchAddress(
                                     country = "EG",
-                                    governate = "Cairo",
-                                    regionCity = "Heliopolis",
-                                    street = "4 Al Badia St. - Al Thawra St. - Heliopolis",
+                                    governate = "New Cairo",
+                                    regionCity = "The First Settlement",
+                                    street = "GF13 - Freya - Lanovista Mall - Garden 8 Al Mashtal Street",
                                     buildingNumber = "1",
                                     postalCode = "1",
                                     floor = "1",
@@ -155,7 +162,7 @@ class LocalReceiptGateway : IReceiptGateway {
                                     landmark = "",
                                     additionalInformation = "",
                                 ),
-                                deviceSerialNumber = "PSH71206",
+                                deviceSerialNumber = "XTL40750",
                                 syndicateLicenseNumber = "",
                                 activityCode = "5610",
                             ),
@@ -166,18 +173,23 @@ class LocalReceiptGateway : IReceiptGateway {
                                 mobileNumber = firstRow["BuyerMobileNumber"]?.toString() ?: "",
                             ),
                             itemData = items,
-                            totalSales = firstRow["totalSales"]?.toString()?.toBigDecimalOrNull()?.setScale(5)
+                            totalSales = firstRow["totalSales"]?.toString()?.toBigDecimalOrNull()
+                                ?.setScale(5, BigDecimal.ROUND_HALF_UP)
                                 ?: BigDecimal(0.0),
                             totalCommercialDiscount = firstRow["totalCommercialDiscount"]?.toString()
                                 ?.toBigDecimalOrNull() ?: BigDecimal(0.0),
-                            netAmount = firstRow["netAmount"]?.toString()?.toBigDecimalOrNull() ?: BigDecimal(0.0),
+                            netAmount = firstRow["netAmount"]?.toString()?.toBigDecimalOrNull()
+
+                                ?: BigDecimal(0.0),
                             feesAmount = firstRow["feesAmount"]?.toString()?.toDoubleOrNull() ?: 0.0,
-                            totalAmount = firstRow["totalAmount"]?.toString()?.toBigDecimalOrNull()?.setScale(5)
+                            totalAmount = firstRow["totalAmount"]?.toString()?.toBigDecimalOrNull()
+                                ?.setScale(5, BigDecimal.ROUND_HALF_UP)
                                 ?: BigDecimal(0.0),
                             taxTotals = listOf(
                                 TaxTotal(
                                     taxType = firstRow["Tax_Type"]?.toString() ?: "",
-                                    amount = firstRow["TotalTax"]?.toString()?.toBigDecimalOrNull()?.setScale(5)
+                                    amount = firstRow["TotalTax"]?.toString()?.toBigDecimalOrNull()
+                                        ?.setScale(5, BigDecimal.ROUND_HALF_UP)
                                         ?: BigDecimal(0.0),
                                 )
                             ),

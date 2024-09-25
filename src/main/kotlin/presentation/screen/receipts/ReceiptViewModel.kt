@@ -234,7 +234,8 @@ class ReceiptViewModel(
                 val receipts = state.value.selectedReceipts.sortedBy { it.header.receiptNumber }.map {
                     it.toEntity()
                 }.map { receiptDetailsUiState ->
-                    val temp = cleanDocument(receiptDetailsUiState)
+                    val temp =
+                        cleanDocument(receiptDetailsUiState.copy(header = receiptDetailsUiState.header.copy(uuid = "")))
                     val encryptedUUID = signDocument(temp, false)
                     receiptDetailsUiState.copy(header = receiptDetailsUiState.header.copy(uuid = encryptedUUID))
                 }
