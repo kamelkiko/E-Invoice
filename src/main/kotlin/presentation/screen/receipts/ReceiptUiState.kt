@@ -53,6 +53,7 @@ data class ReceiptPageInfoUiState(
 
 @Immutable
 data class ReceiptDetailsUiState(
+    val id: String? = null,
     val header: HeaderUiState = HeaderUiState(),
     val documentType: DocumentTypeUiState = DocumentTypeUiState(),
     val seller: SellerUiState = SellerUiState(),
@@ -79,7 +80,8 @@ data class ReceiptDetailsUiState(
         feesAmount = feesAmount,
         totalAmount = totalAmount,
         taxTotals = taxTotals.map { it.toEntity() },
-        paymentMethod = paymentMethod
+        paymentMethod = paymentMethod,
+        id = id
     )
 }
 
@@ -407,5 +409,6 @@ fun Receipt.toDetailsUiState(): ReceiptDetailsUiState = ReceiptDetailsUiState(
     feesAmount = feesAmount,
     totalAmount = totalAmount,
     taxTotals = taxTotals.map { it.toUiState() },
-    paymentMethod = paymentMethod
+    paymentMethod = paymentMethod,
+    id = id,
 )

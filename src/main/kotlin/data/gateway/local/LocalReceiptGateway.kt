@@ -83,13 +83,13 @@ class LocalReceiptGateway : IReceiptGateway {
                     }
                     receiptsMap[invoiceId]?.add(row)
                 } ?: throw EmptyDataException("Empty Invoices")
-                receiptsMap.map { (_, rows) ->
+                receiptsMap.map { (invoiceId, rows) ->
                     val firstRow = rows.first()
                     val items = rows.map { row ->
                         ItemData(
                             description = row["description"]?.toString() ?: "",
                             itemType = row["itemType"]?.toString() ?: "",
-                            itemCode = row["itemCode"]?.toString() ?: "",
+                            itemCode = "EG-537315942-25162411",
                             unitType = row["unitType"]?.toString() ?: "",
                             quantity = row["quantity"]?.toString()?.toBigDecimalOrNull()
                                 ?.setScale(5, BigDecimal.ROUND_HALF_UP)
@@ -130,6 +130,7 @@ class LocalReceiptGateway : IReceiptGateway {
                     }
                     list.add(
                         Receipt(
+                            id = invoiceId,
                             header = Header(
                                 dateTimeIssued = firstRow["dateTimeIssued"]?.toString() ?: "",
                                 receiptNumber = firstRow["Recipt_No"]?.toString() ?: "",
@@ -147,14 +148,14 @@ class LocalReceiptGateway : IReceiptGateway {
                                 typeVersion = firstRow["typeVersion"]?.toString() ?: "",
                             ),
                             seller = Seller(
-                                rin = "374676399",
-                                companyTradeName = "شركه حجى اند حجى",
-                                branchCode = "6",
+                                rin = "537315942",
+                                companyTradeName = "شركه حجى للمطاعم",
+                                branchCode = "1",
                                 branchAddress = BranchAddress(
                                     country = "EG",
                                     governate = "New Cairo",
-                                    regionCity = "The 5th Settlement",
-                                    street = "Mall Waterway 3",
+                                    regionCity = "The First Settlement",
+                                    street = "GF13 - Freya - Lanovista Mall - Garden 8 Al Mashtal Street",
                                     buildingNumber = "1",
                                     postalCode = "1",
                                     floor = "1",
@@ -162,9 +163,9 @@ class LocalReceiptGateway : IReceiptGateway {
                                     landmark = "",
                                     additionalInformation = "",
                                 ),
-                                deviceSerialNumber = "SPAH5Q5EW",
+                                deviceSerialNumber = "XTL40750",
                                 syndicateLicenseNumber = "",
-                                activityCode = "4771",
+                                activityCode = "5610",
                             ),
                             buyer = Buyer(
                                 type = firstRow["BuyerType"]?.toString() ?: "",
