@@ -83,7 +83,7 @@ class LocalReceiptGateway : IReceiptGateway {
                     }
                     receiptsMap[invoiceId]?.add(row)
                 } ?: throw EmptyDataException("Empty Invoices")
-                receiptsMap.map { (_, rows) ->
+                receiptsMap.map { (invoiceId, rows) ->
                     val firstRow = rows.first()
                     val items = rows.map { row ->
                         ItemData(
@@ -130,6 +130,7 @@ class LocalReceiptGateway : IReceiptGateway {
                     }
                     list.add(
                         Receipt(
+                            id = invoiceId,
                             header = Header(
                                 dateTimeIssued = firstRow["dateTimeIssued"]?.toString() ?: "",
                                 receiptNumber = firstRow["Recipt_No"]?.toString() ?: "",
