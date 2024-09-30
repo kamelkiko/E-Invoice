@@ -89,7 +89,7 @@ class LocalReceiptGateway : IReceiptGateway {
                         ItemData(
                             description = row["description"]?.toString() ?: "",
                             itemType = row["itemType"]?.toString() ?: "",
-                            itemCode = "EG-537315942-25162411",
+                            itemCode = row["itemCode"]?.toString() ?: "",
                             unitType = row["unitType"]?.toString() ?: "",
                             quantity = row["quantity"]?.toString()?.toBigDecimalOrNull()
                                 ?.setScale(5, BigDecimal.ROUND_HALF_UP)
@@ -148,14 +148,14 @@ class LocalReceiptGateway : IReceiptGateway {
                                 typeVersion = firstRow["typeVersion"]?.toString() ?: "",
                             ),
                             seller = Seller(
-                                rin = "537315942",
-                                companyTradeName = "شركه حجى للمطاعم",
-                                branchCode = "1",
+                                rin = "374676399",
+                                companyTradeName = "شركه حجى اند حجى",
+                                branchCode = "6",
                                 branchAddress = BranchAddress(
                                     country = "EG",
                                     governate = "New Cairo",
-                                    regionCity = "The First Settlement",
-                                    street = "GF13 - Freya - Lanovista Mall - Garden 8 Al Mashtal Street",
+                                    regionCity = "The 5th Settlement",
+                                    street = "Mall Waterway 3",
                                     buildingNumber = "1",
                                     postalCode = "1",
                                     floor = "1",
@@ -163,9 +163,9 @@ class LocalReceiptGateway : IReceiptGateway {
                                     landmark = "",
                                     additionalInformation = "",
                                 ),
-                                deviceSerialNumber = "XTL40750",
+                                deviceSerialNumber = "SPAH5Q5EW",
                                 syndicateLicenseNumber = "",
-                                activityCode = "5610",
+                                activityCode = "4771",
                             ),
                             buyer = Buyer(
                                 type = firstRow["BuyerType"]?.toString() ?: "",
