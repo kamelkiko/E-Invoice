@@ -62,7 +62,7 @@ class AuthGateway(
             val list = mutableListOf<StoreAuth>()
             val data = getData("select * from dbo.Store")
             if (data.isSuccess) {
-                data.getOrNull()?.forEach { row ->
+                data.getOrNull()?.forEach { _ ->
                     list.add(
                         StoreAuth(
                             posSerial = "PSH71206",
