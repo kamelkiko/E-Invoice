@@ -62,13 +62,13 @@ class AuthGateway(
             val list = mutableListOf<StoreAuth>()
             val data = getData("select * from dbo.Store")
             if (data.isSuccess) {
-                data.getOrNull()?.forEach { row ->
+                data.getOrNull()?.forEach { _ ->
                     list.add(
                         StoreAuth(
-                            posSerial = "XTL40750",
+                            posSerial = "SPAH5Q5EW",
                             posOsVersion = "Windows",
-                            clientId = "4192d67f-9cc0-4bd5-acf7-e5a3383fd990",
-                            clientSecret = "cf9393d0-0d9a-4a02-a0fb-82faa031a6e5"
+                            clientId = "b3fadf52-bc3a-40db-ab57-09647ab8dc6e",
+                            clientSecret = "7d69b416-19f0-43bd-91da-80e806d92c3c"
                         )
                     )
                 } ?: throw EmptyDataException("Empty store")
