@@ -65,10 +65,10 @@ class AuthGateway(
                 data.getOrNull()?.forEach { _ ->
                     list.add(
                         StoreAuth(
-                            posSerial = "PSH71206",
+                            posSerial = "XTL40750",
                             posOsVersion = "Windows",
-                            clientId = "ba3f5560-5608-4c55-923d-917cc2966e5a",
-                            clientSecret = "195a5190-d9ce-422c-98dc-bc30b4885a21"
+                            clientId = "4192d67f-9cc0-4bd5-acf7-e5a3383fd990",
+                            clientSecret = "cf9393d0-0d9a-4a02-a0fb-82faa031a6e5"
                         )
                     )
                 } ?: throw EmptyDataException("Empty store")
