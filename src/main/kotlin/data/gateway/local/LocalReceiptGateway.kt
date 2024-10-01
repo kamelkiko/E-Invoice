@@ -216,7 +216,6 @@ class LocalReceiptGateway : IReceiptGateway {
     }
 }
 
-private fun calculateDiscountPercentage(originalPrice: BigDecimal, discountedPrice: BigDecimal): Double {
-    val discount = originalPrice - discountedPrice
-    return ((discount / originalPrice) * BigDecimal(100)).toDouble()
+private fun calculateDiscountPercentage(originalPrice: BigDecimal, discountPrice: BigDecimal): Double {
+    return (discountPrice.toDouble() / originalPrice.toDouble()) * 100.0
 }
