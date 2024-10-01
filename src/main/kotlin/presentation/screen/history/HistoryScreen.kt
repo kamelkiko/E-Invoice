@@ -74,7 +74,8 @@ class HistoryScreen : Screen {
                         onClick = historyViewModel::onClickExportAll,
                         textPadding = PaddingValues(horizontal = 24.kms),
                         modifier = Modifier.cursorHoverIconHand(),
-                        isLoading = state.isLoadingExportAll
+                        isLoading = state.isLoadingExportAll,
+                        enabled = state.receipts.isNotEmpty()
                     )
                 }
                 EITable(
