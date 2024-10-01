@@ -36,9 +36,10 @@ data class ReceiptUiState(
             Header(Resources.strings.totalValues, 1f),
             // Header(Resources.strings.subTotal, 3f),
             Header(Resources.strings.totalTaxes, 1f),
+            Header("Discount", 1f),
 //            Header(Resources.strings.currency, 1.5f),
             Header(Resources.strings.date, 1f),
-            Header(Resources.strings.uuid, 2f),
+            Header(Resources.strings.uuid, 1f),
             // Header(Resources.strings.storeName, 2f),
             Header("", 0.5f),
         )

@@ -110,6 +110,7 @@ class HistoryViewModel(
                         hasConnection = false,
                         isSnackBarVisible = true,
                         snackBarTitle = error.message ?: "",
+                        isLoadingExportAll = false
                     )
                 }
             }
@@ -119,6 +120,7 @@ class HistoryViewModel(
                     it.copy(
                         isSnackBarVisible = true,
                         snackBarTitle = error.message ?: "",
+                        isLoadingExportAll = false
                     )
                 }
             }
@@ -128,6 +130,7 @@ class HistoryViewModel(
                     it.copy(
                         isSnackBarVisible = true,
                         snackBarTitle = error.message ?: "",
+                        isLoadingExportAll = false
                     )
                 }
             }
@@ -137,6 +140,7 @@ class HistoryViewModel(
                     it.copy(
                         isSnackBarVisible = true,
                         snackBarTitle = error.message ?: "",
+                        isLoadingExportAll = false
                     )
                 }
             }
@@ -146,6 +150,7 @@ class HistoryViewModel(
                     it.copy(
                         isSnackBarVisible = true,
                         snackBarTitle = error.message ?: "",
+                        isLoadingExportAll = false
                     )
                 }
             }
@@ -154,6 +159,7 @@ class HistoryViewModel(
                 it.copy(
                     isSnackBarVisible = true,
                     snackBarTitle = "Something happened please try again!",
+                    isLoadingExportAll = false
                 )
             }
         }
@@ -197,40 +203,50 @@ class HistoryViewModel(
     override fun onClickExportAll() {
         updateState { it.copy(isLoadingExportAll = true) }
         viewModelScope.launch(Dispatchers.Default) {
-            workbook {
-                sheet("Receipts") {
-                    receiptsHeader()
-                    state.value.pageInfo.data.forEachIndexed { no, receipt ->
-                        row {
-                            cell(no + 1)
-                            cell(receipt.receiptNumber)
-                            cell(receipt.dateTimeIssued)
-                            cell(receipt.totalSales.toString())
-                            cell(receipt.totalCommercialDiscount.toString())
-                            cell(receipt.feesAmount.toString())
-                            cell(receipt.netAmount.toString())
-                            cell(receipt.taxTotals.toString())
-                            cell(receipt.totalAmount.toString())
-                            cell(receipt.status)
-                            cell(receipt.storeName)
+            try {
+                workbook {
+                    sheet("Receipts") {
+                        receiptsHeader()
+                        state.value.pageInfo.data.forEachIndexed { no, receipt ->
+                            row {
+                                cell(no + 1)
+                                cell(receipt.receiptNumber)
+                                cell(receipt.dateTimeIssued)
+                                cell(receipt.totalSales.toString())
+                                cell(receipt.totalCommercialDiscount.toString())
+                                cell(receipt.feesAmount.toString())
+                                cell(receipt.netAmount.toString())
+                                cell(receipt.taxTotals.toString())
+                                cell(receipt.totalAmount.toString())
+                                cell(receipt.status)
+                                cell(receipt.storeName)
+                            }
                         }
                     }
-                }
-            }.write("receipts.xlsx")
+                }.write("receipts.xlsx")
 
-            val excelFile = File("receipts.xlsx")
-            if (Desktop.isDesktopSupported()) {
-                withContext(Dispatchers.IO) {
-                    Desktop.getDesktop().open(excelFile)
+                val excelFile = File("receipts.xlsx")
+                if (Desktop.isDesktopSupported()) {
+                    withContext(Dispatchers.IO) {
+                        Desktop.getDesktop().open(excelFile)
+                    }
                 }
-            }
 
-            updateState {
-                it.copy(
-                    isLoadingExportAll = false,
-                    isSnackBarSuccessVisible = true,
-                    snackBarSuccessTitle = "Exported excel done!"
-                )
+                updateState {
+                    it.copy(
+                        isLoadingExportAll = false,
+                        isSnackBarSuccessVisible = true,
+                        snackBarSuccessTitle = "Exported excel done!"
+                    )
+                }
+            } catch (e: Exception) {
+                updateState {
+                    it.copy(
+                        isLoadingExportAll = false,
+                        isSnackBarVisible = true,
+                        snackBarTitle = "Something happened please try again!"
+                    )
+                }
             }
         }
     }
