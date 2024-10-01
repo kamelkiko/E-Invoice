@@ -322,9 +322,10 @@ private fun RowScope.TaxiRow(
     TitleField(text = receipt.totalAmount.toString(), weight = 1f)
     //TitleField(text = "2500", weight = 3f)
     TitleField(text = receipt.taxTotals.sumOf { it.amount }.toString(), weight = 1f)
+    TitleField(text = receipt.totalCommercialDiscount.toString(), weight = 1f)
 //    TitleField(text = "EGP", weight = 1.5f)
     TitleField(text = receipt.header.dateTimeIssued, weight = 1f)
-    TitleField(text = receipt.header.uuid ?: "", weight = 2f)
+    TitleField(text = receipt.header.uuid ?: "", weight = 1f)
     //TitleField(text = receipt.storeName, weight = 2f)
 //    FlowRow(
 //        modifier = Modifier.weight(3f),
