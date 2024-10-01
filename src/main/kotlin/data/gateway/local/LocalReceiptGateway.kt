@@ -111,9 +111,19 @@ class LocalReceiptGateway : IReceiptGateway {
                             itemDiscountData = emptyList(),
                             commercialDiscountData = listOf(
                                 CommercialDiscountData(
-                                    amount = BigDecimal(0.0),
+                                    amount = row["commercialDiscountData"]?.toString()?.toBigDecimalOrNull()
+                                        ?.setScale(5, BigDecimal.ROUND_HALF_UP)
+                                        ?: BigDecimal(0.0),
                                     description = "خصم",
-                                    rate = 0.0
+                                    rate = calculateDiscountPercentage(
+                                        row["totalSale"]?.toString()?.toBigDecimalOrNull()
+                                            ?.setScale(5, BigDecimal.ROUND_HALF_UP) ?: BigDecimal(
+                                            0.0
+                                        ),
+                                        row["commercialDiscountData"]?.toString()?.toBigDecimalOrNull()
+                                            ?.setScale(5, BigDecimal.ROUND_HALF_UP)
+                                            ?: BigDecimal(0.0)
+                                    )
                                 )
                             ),
                             taxableItems = listOf(
@@ -204,4 +214,9 @@ class LocalReceiptGateway : IReceiptGateway {
             throw UnknownErrorException(e.message)
         }
     }
+}
+
+private fun calculateDiscountPercentage(originalPrice: BigDecimal, discountedPrice: BigDecimal): Double {
+    val discount = originalPrice - discountedPrice
+    return ((discount / originalPrice) * BigDecimal(100)).toDouble()
 }
