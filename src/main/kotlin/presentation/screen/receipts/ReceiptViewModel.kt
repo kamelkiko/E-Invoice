@@ -3,6 +3,7 @@ package presentation.screen.receipts
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.vladsch.kotlin.jdbc.sqlQuery
 import com.vladsch.kotlin.jdbc.usingDefault
+import data.remote.model.submit.SubmissionDTO
 import data.util.AppConstants
 import data.util.HistoryData
 import domain.entity.DataWrapper
@@ -228,93 +229,94 @@ class ReceiptViewModel(
     }
 
     override fun onClickSend() {
-        updateState { it.copy(isLoadingSend = true) }
-        tryToExecute(
-            function = {
-                val receipts = state.value.selectedReceipts.sortedBy { it.header.receiptNumber }.map {
-                    it.toEntity()
-                }.map { receiptDetailsUiState ->
-                    val temp =
-                        cleanDocument(
-                            receiptDetailsUiState.copy(
-                                header = receiptDetailsUiState.header.copy(uuid = ""),
-                                id = null
-                            )
-                        )
-                    val encryptedUUID = signDocument(temp, false)
+       // updateState { it.copy(isLoadingSend = true) }
+        val receipts = state.value.selectedReceipts.sortedBy { it.header.receiptNumber }.map {
+            it.toEntity()
+        }.map { receiptDetailsUiState ->
+            val temp =
+                cleanDocument(
                     receiptDetailsUiState.copy(
-                        header = receiptDetailsUiState.header.copy(uuid = encryptedUUID),
+                        header = receiptDetailsUiState.header.copy(uuid = ""),
                         id = null
                     )
-                }
-                sendReceipt(receipts)
-            },
-            onSuccess = { submit ->
-                updateState { it.copy(isLoadingSend = false) }
-                viewModelScope.launch(Dispatchers.Default) {
-                    submit.acceptedDocuments?.forEach { document ->
-                        try {
-                            usingDefault { session ->
-                                val query0 = sqlQuery("DISABLE TRIGGER FposCheckIU ON dbo.FposCheck;")
-                                session.execute(query0)
-                                val query1 =
-                                    sqlQuery("insert into dbo.CheckUUID(checkID,UUID,Submit_UUID,receiptNumber,dateMade,storeID) values('${state.value.selectedReceipts.first { document.receiptNumber == it.header.receiptNumber }.id}','${document.uuid}','${submit.submissionId}','${document.receiptNumber}','${state.value.selectedReceipts.first { document.receiptNumber == it.header.receiptNumber }.header.dateTimeIssued}','${AppConstants.storeId}')")
-                                session.execute(query1)
-                                val query2 = sqlQuery("update dbo.Stores set last_uuid = '${document.uuid}';")
-                                session.execute(query2)
-                                val query3 = sqlQuery("ENABLE TRIGGER FposCheckIU ON dbo.FposCheck;")
-                                session.execute(query3)
-                                AppConstants.historyData.add(
-                                    HistoryData(
-                                        uuid = document.uuid ?: "",
-                                        submitUUID = submit.submissionId ?: "",
-                                        dateTimeIssued = state.value.selectedReceipts.first { document.receiptNumber == it.header.receiptNumber }.header.dateTimeIssued,
-                                        dateTimeReceived = getDateNow().toString(),
-                                        receiptNumber = document.receiptNumber ?: "",
-                                        taxTotals = state.value.selectedReceipts.first { document.receiptNumber == it.header.receiptNumber }.taxTotals.sumOf { it.amount },
-                                        totalSales = state.value.selectedReceipts.first { document.receiptNumber == it.header.receiptNumber }.totalSales,
-                                        totalCommercialDiscount = state.value.selectedReceipts.first { document.receiptNumber == it.header.receiptNumber }.totalCommercialDiscount,
-                                        netAmount = state.value.selectedReceipts.first { document.receiptNumber == it.header.receiptNumber }.netAmount,
-                                        feesAmount = state.value.selectedReceipts.first { document.receiptNumber == it.header.receiptNumber }.feesAmount,
-                                        totalAmount = state.value.selectedReceipts.first { document.receiptNumber == it.header.receiptNumber }.totalAmount,
-                                        storeName = AppConstants.storeName,
-                                        status = "Unknown",
-                                    )
-                                )
-                            }
-                        } catch (e: Exception) {
-                            updateState {
-                                it.copy(
-                                    isSnackBarVisible = true,
-                                    snackBarTitle = e.message ?: "",
-                                )
-                            }
-                        }
-                    }
-                    submit.rejectedDocuments.forEach { rejectedDocument ->
-                        val errorMessages =
-                            rejectedDocument.error.details.joinToString { it.message ?: "Something went wrong" }
-                        updateState {
-                            it.copy(
-                                isSnackBarVisible = true,
-                                snackBarTitle = "receipt ${rejectedDocument.receiptNumber} rejected because $errorMessages",
-                            )
-                        }
-                        delay(1500L)
-                    }
-                    updateState {
-                        it.copy(
-                            isSnackBarSuccessVisible = true,
-                            snackBarSuccessTitle = "Receipts sent successfully, please check your history",
-                            selectedReceipts = emptyList()
-                        )
-                    }
-                    updateState { it.copy(selectedReceipts = emptyList()) }
-                    getReceipts()
-                }
-            },
-            onError = ::onError
-        )
+                )
+            val encryptedUUID = signDocument(temp, false)
+            receiptDetailsUiState.copy(
+                header = receiptDetailsUiState.header.copy(uuid = encryptedUUID),
+                id = null
+            )
+        }
+        println(receipts)
+//        tryToExecute(
+//            function = {
+//                sendReceipt(receipts)
+//            },
+//            onSuccess = { submit ->
+//                updateState { it.copy(isLoadingSend = false) }
+//                viewModelScope.launch(Dispatchers.Default) {
+//                    submit.acceptedDocuments?.forEach { document ->
+//                        try {
+//                            usingDefault { session ->
+//                                val query0 = sqlQuery("DISABLE TRIGGER FposCheckIU ON dbo.FposCheck;")
+//                                session.execute(query0)
+//                                val query1 =
+//                                    sqlQuery("insert into dbo.CheckUUID(checkID,UUID,Submit_UUID,receiptNumber,dateMade,storeID) values('${state.value.selectedReceipts.first { document.receiptNumber == it.header.receiptNumber }.id}','${document.uuid}','${submit.submissionId}','${document.receiptNumber}','${state.value.selectedReceipts.first { document.receiptNumber == it.header.receiptNumber }.header.dateTimeIssued}','${AppConstants.storeId}')")
+//                                session.execute(query1)
+//                                val query2 = sqlQuery("update dbo.Stores set last_uuid = '${document.uuid}';")
+//                                session.execute(query2)
+//                                val query3 = sqlQuery("ENABLE TRIGGER FposCheckIU ON dbo.FposCheck;")
+//                                session.execute(query3)
+//                                AppConstants.historyData.add(
+//                                    HistoryData(
+//                                        uuid = document.uuid ?: "",
+//                                        submitUUID = submit.submissionId ?: "",
+//                                        dateTimeIssued = state.value.selectedReceipts.first { document.receiptNumber == it.header.receiptNumber }.header.dateTimeIssued,
+//                                        dateTimeReceived = getDateNow().toString(),
+//                                        receiptNumber = document.receiptNumber ?: "",
+//                                        taxTotals = state.value.selectedReceipts.first { document.receiptNumber == it.header.receiptNumber }.taxTotals.sumOf { it.amount },
+//                                        totalSales = state.value.selectedReceipts.first { document.receiptNumber == it.header.receiptNumber }.totalSales,
+//                                        totalCommercialDiscount = state.value.selectedReceipts.first { document.receiptNumber == it.header.receiptNumber }.totalCommercialDiscount,
+//                                        netAmount = state.value.selectedReceipts.first { document.receiptNumber == it.header.receiptNumber }.netAmount,
+//                                        feesAmount = state.value.selectedReceipts.first { document.receiptNumber == it.header.receiptNumber }.feesAmount,
+//                                        totalAmount = state.value.selectedReceipts.first { document.receiptNumber == it.header.receiptNumber }.totalAmount,
+//                                        storeName = AppConstants.storeName,
+//                                        status = "Unknown",
+//                                    )
+//                                )
+//                            }
+//                        } catch (e: Exception) {
+//                            updateState {
+//                                it.copy(
+//                                    isSnackBarVisible = true,
+//                                    snackBarTitle = e.message ?: "",
+//                                )
+//                            }
+//                        }
+//                    }
+//                    submit.rejectedDocuments.forEach { rejectedDocument ->
+//                        val errorMessages =
+//                            rejectedDocument.error.details.joinToString { it.message ?: "Something went wrong" }
+//                        updateState {
+//                            it.copy(
+//                                isSnackBarVisible = true,
+//                                snackBarTitle = "receipt ${rejectedDocument.receiptNumber} rejected because $errorMessages",
+//                            )
+//                        }
+//                        delay(1500L)
+//                    }
+//                    updateState {
+//                        it.copy(
+//                            isSnackBarSuccessVisible = true,
+//                            snackBarSuccessTitle = "Receipts sent successfully, please check your history",
+//                            selectedReceipts = emptyList()
+//                        )
+//                    }
+//                    updateState { it.copy(selectedReceipts = emptyList()) }
+//                    getReceipts()
+//                }
+//            },
+//            onError = ::onError
+        //)
     }
 
     private fun serialize(request: JsonObject): String {
