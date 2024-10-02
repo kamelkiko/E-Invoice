@@ -11,8 +11,8 @@ object AppLanguage {
 }
 
 object AppConstants {
-    var storeId: String = "001"
-    var storeName: String = "Esca Heliopolis"
+    var storeId: String = "003"
+    var storeName: String = "Freya"
     var isAdmin = false
     var historyData = mutableListOf<HistoryData>()
 }
