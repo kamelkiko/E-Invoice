@@ -257,6 +257,9 @@ class ReceiptViewModel(
                             usingDefault { session ->
                                 val query0 = sqlQuery("DISABLE TRIGGER FposCheckIU ON dbo.FposCheck;")
                                 session.execute(query0)
+                                val query =
+                                    sqlQuery("Delete from dbo.CheckUUID where checkID='${state.value.selectedReceipts.first { document.receiptNumber == it.header.receiptNumber }.id}' ;")
+                                session.execute(query)
                                 val query1 =
                                     sqlQuery("insert into dbo.CheckUUID(checkID,UUID,Submit_UUID,receiptNumber,dateMade,storeID) values('${state.value.selectedReceipts.first { document.receiptNumber == it.header.receiptNumber }.id}','${document.uuid}','${submit.submissionId}','${document.receiptNumber}','${state.value.selectedReceipts.first { document.receiptNumber == it.header.receiptNumber }.header.dateTimeIssued}','${AppConstants.storeId}')")
                                 session.execute(query1)
