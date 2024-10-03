@@ -163,9 +163,9 @@ class LocalReceiptGateway : IReceiptGateway {
                                 branchCode = "1",
                                 branchAddress = BranchAddress(
                                     country = "EG",
-                                    governate = "Cairo",
-                                    regionCity = "Heliopolis",
-                                    street = "4 Al Badia St. - Al Thawra St. - Heliopolis",
+                                    governate = "New Cairo",
+                                    regionCity = "The First Settlement",
+                                    street = "GF13 - Freya - Lanovista Mall - Garden 8 Al Mashtal Street",
                                     buildingNumber = "1",
                                     postalCode = "1",
                                     floor = "1",
@@ -173,7 +173,7 @@ class LocalReceiptGateway : IReceiptGateway {
                                     landmark = "",
                                     additionalInformation = "",
                                 ),
-                                deviceSerialNumber = "PSH71206",
+                                deviceSerialNumber = "XTL40750",
                                 syndicateLicenseNumber = "",
                                 activityCode = "5610",
                             ),
@@ -217,5 +217,7 @@ class LocalReceiptGateway : IReceiptGateway {
 }
 
 private fun calculateDiscountPercentage(originalPrice: BigDecimal, discountPrice: BigDecimal): Double {
-    return (discountPrice.toDouble() / originalPrice.toDouble()) * 100.0
+    if (originalPrice.toDouble() == 0.0) return 0.0
+    val result = (discountPrice.toDouble() / originalPrice.toDouble()) * 100.0
+    return if (result.isNaN()) 0.0 else result
 }
