@@ -6,6 +6,7 @@ import java.math.BigDecimal
 
 @Serializable
 data class Receipt(
+    val id: String? = null,
     val header: Header,
     val documentType: DocumentType,
     val seller: Seller,
