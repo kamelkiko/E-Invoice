@@ -151,6 +151,7 @@ class LocalReceiptGateway(
                     }
                     list.add(
                         Receipt(
+                            id = invoiceId,
                             header = Header(
                                 dateTimeIssued = firstRow["dateTimeIssued"]?.toString() ?: "",
                                 receiptNumber = firstRow["Recipt_No"]?.toString() ?: "",
@@ -224,10 +225,10 @@ class LocalReceiptGateway(
             throw UnknownErrorException(e.message)
         }
     }
+}
 
-    private fun calculateDiscountPercentage(originalPrice: BigDecimal, discountPrice: BigDecimal): Double {
-        if (originalPrice.toDouble() == 0.0) return 0.0
-        val result = (discountPrice.toDouble() / originalPrice.toDouble()) * 100.0
-        return if (result.isNaN()) 0.0 else result
-    }
+private fun calculateDiscountPercentage(originalPrice: BigDecimal, discountPrice: BigDecimal): Double {
+    if (originalPrice.toDouble() == 0.0) return 0.0
+    val result = (discountPrice.toDouble() / originalPrice.toDouble()) * 100.0
+    return if (result.isNaN()) 0.0 else result
 }
