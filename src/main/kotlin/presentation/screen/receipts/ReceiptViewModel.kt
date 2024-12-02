@@ -234,9 +234,18 @@ class ReceiptViewModel(
                 val receipts = state.value.selectedReceipts.sortedBy { it.header.receiptNumber }.map {
                     it.toEntity()
                 }.map { receiptDetailsUiState ->
-                    val temp = cleanDocument(receiptDetailsUiState)
+                    val temp =
+                        cleanDocument(
+                            receiptDetailsUiState.copy(
+                                header = receiptDetailsUiState.header.copy(uuid = ""),
+                                id = null
+                            )
+                        )
                     val encryptedUUID = signDocument(temp, false)
-                    receiptDetailsUiState.copy(header = receiptDetailsUiState.header.copy(uuid = encryptedUUID))
+                    receiptDetailsUiState.copy(
+                        header = receiptDetailsUiState.header.copy(uuid = encryptedUUID),
+                        id = null
+                    )
                 }
                 sendReceipt(receipts)
             },
@@ -248,8 +257,11 @@ class ReceiptViewModel(
                             usingDefault { session ->
                                 val query0 = sqlQuery("DISABLE TRIGGER FposCheckIU ON dbo.FposCheck;")
                                 session.execute(query0)
+                                val query =
+                                    sqlQuery("Delete from dbo.CheckUUID where checkID='${state.value.selectedReceipts.first { document.receiptNumber == it.header.receiptNumber }.id}' ;")
+                                session.execute(query)
                                 val query1 =
-                                    sqlQuery("insert into dbo.CheckUUID(UUID,Submit_UUID,receiptNumber,dateMade) values('${document.uuid}','${submit.submissionId}','${document.receiptNumber}','${state.value.selectedReceipts.first { document.receiptNumber == it.header.receiptNumber }.header.dateTimeIssued}')")
+                                    sqlQuery("insert into dbo.CheckUUID(checkID,UUID,Submit_UUID,receiptNumber,dateMade,storeID) values('${state.value.selectedReceipts.first { document.receiptNumber == it.header.receiptNumber }.id}','${document.uuid}','${submit.submissionId}','${document.receiptNumber}','${state.value.selectedReceipts.first { document.receiptNumber == it.header.receiptNumber }.header.dateTimeIssued}','${AppConstants.storeId}')")
                                 session.execute(query1)
                                 val query2 = sqlQuery("update dbo.Stores set last_uuid = '${document.uuid}';")
                                 session.execute(query2)

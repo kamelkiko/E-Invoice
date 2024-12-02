@@ -5,8 +5,6 @@ import data.util.AppConstants
 import data.util.HistoryData
 import domain.entity.DataWrapper
 import domain.usecase.GetReceiptDetailsUseCase
-import io.github.evanrupert.excelkt.Sheet
-import io.github.evanrupert.excelkt.workbook
 import kotlinx.coroutines.*
 import org.apache.poi.ss.usermodel.FillPatternType
 import org.apache.poi.ss.usermodel.IndexedColors
@@ -223,43 +221,43 @@ class SearchViewModel(
 
     override fun onClickExportAll() {
         updateState { it.copy(isLoadingExportAll = true) }
-        viewModelScope.launch(Dispatchers.Default) {
-            workbook {
-                sheet("Receipts") {
-                    receiptsHeader()
-                    state.value.pageInfo.data.forEachIndexed { no, receipt ->
-                        row {
-                            cell(no + 1)
-                            cell(receipt.receiptNumber)
-                            cell(receipt.dateTimeIssued)
-                            cell(receipt.totalSales.toString())
-                            cell(receipt.totalCommercialDiscount.toString())
-                            cell(receipt.feesAmount.toString())
-                            cell(receipt.netAmount.toString())
-                            cell(receipt.taxTotals.toString())
-                            cell(receipt.totalAmount.toString())
-                            cell(receipt.status)
-                            cell(receipt.storeName)
-                        }
-                    }
-                }
-            }.write("receipts.xlsx")
-
-            val excelFile = File("receipts.xlsx")
-            if (Desktop.isDesktopSupported()) {
-                withContext(Dispatchers.IO) {
-                    Desktop.getDesktop().open(excelFile)
-                }
-            }
-
-            updateState {
-                it.copy(
-                    isLoadingImport = false,
-                    isSnackBarSuccessVisible = true,
-                    snackBarSuccessTitle = "Exported excel done!"
-                )
-            }
-        }
+//        viewModelScope.launch(Dispatchers.Default) {
+//            workbook {
+//                sheet("Receipts") {
+//                    receiptsHeader()
+//                    state.value.pageInfo.data.forEachIndexed { no, receipt ->
+//                        row {
+//                            cell(no + 1)
+//                            cell(receipt.receiptNumber)
+//                            cell(receipt.dateTimeIssued)
+//                            cell(receipt.totalSales.toString())
+//                            cell(receipt.totalCommercialDiscount.toString())
+//                            cell(receipt.feesAmount.toString())
+//                            cell(receipt.netAmount.toString())
+//                            cell(receipt.taxTotals.toString())
+//                            cell(receipt.totalAmount.toString())
+//                            cell(receipt.status)
+//                            cell(receipt.storeName)
+//                        }
+//                    }
+//                }
+//            }.write("receipts.xlsx")
+//
+//            val excelFile = File("receipts.xlsx")
+//            if (Desktop.isDesktopSupported()) {
+//                withContext(Dispatchers.IO) {
+//                    Desktop.getDesktop().open(excelFile)
+//                }
+//            }
+//
+//            updateState {
+//                it.copy(
+//                    isLoadingImport = false,
+//                    isSnackBarSuccessVisible = true,
+//                    snackBarSuccessTitle = "Exported excel done!"
+//                )
+//            }
+//        }
     }
 
     override fun onClickSearch() {
@@ -270,36 +268,36 @@ class SearchViewModel(
         updateState { it.copy(uuid = q) }
     }
 
-    private fun Sheet.receiptsHeader() {
-        val headings = listOf(
-            "No.",
-            "Receipt Number",
-            "DateTime Issued",
-            "Total Sales",
-            "Total Commercial Discount",
-            "Fees Amount",
-            "Net Amount",
-            "Tax Totals",
-            "Total Amount",
-            "Status",
-            "Store Name"
-        )
-
-        val headingStyle = createCellStyle {
-            setFont(
-                createFont {
-                    color = IndexedColors.WHITE.index
-                }
-            )
-
-            fillPattern = FillPatternType.SOLID_FOREGROUND
-            fillForegroundColor = IndexedColors.DARK_GREEN.index
-        }
-
-        row(headingStyle) {
-            headings.forEach { cell(it) }
-        }
-    }
+//    private fun Sheet.receiptsHeader() {
+//        val headings = listOf(
+//            "No.",
+//            "Receipt Number",
+//            "DateTime Issued",
+//            "Total Sales",
+//            "Total Commercial Discount",
+//            "Fees Amount",
+//            "Net Amount",
+//            "Tax Totals",
+//            "Total Amount",
+//            "Status",
+//            "Store Name"
+//        )
+//
+//        val headingStyle = createCellStyle {
+//            setFont(
+//                createFont {
+//                    color = IndexedColors.WHITE.index
+//                }
+//            )
+//
+//            fillPattern = FillPatternType.SOLID_FOREGROUND
+//            fillForegroundColor = IndexedColors.DARK_GREEN.index
+//        }
+//
+//        row(headingStyle) {
+//            headings.forEach { cell(it) }
+//        }
+//    }
 
     override fun onRetry() {
         getReceipts()

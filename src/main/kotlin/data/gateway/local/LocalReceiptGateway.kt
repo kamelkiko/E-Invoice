@@ -151,7 +151,6 @@ class LocalReceiptGateway(
                     }
                     list.add(
                         Receipt(
-                            id = invoiceId,
                             header = Header(
                                 dateTimeIssued = firstRow["dateTimeIssued"]?.toString() ?: "",
                                 receiptNumber = firstRow["Recipt_No"]?.toString() ?: "",

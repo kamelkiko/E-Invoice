@@ -65,7 +65,7 @@ class AuthGateway(
             val setupStore = localSetupStoreGateway.getSetupStore()
             val data = getData("select * from dbo.Store")
             if (data.isSuccess) {
-                data.getOrNull()?.forEach { row ->
+                data.getOrNull()?.forEach { _ ->
                     list.add(
                         StoreAuth(
                             posSerial = setupStore.posSerial,

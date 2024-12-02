@@ -24,7 +24,7 @@ object BigDecimalSerializer : KSerializer<BigDecimal> {
         PrimitiveSerialDescriptor("BigDecimal", PrimitiveKind.DOUBLE)
 
     override fun serialize(encoder: Encoder, value: BigDecimal) {
-        encoder.encodeDouble(value.setScale(5, BigDecimal.ROUND_HALF_UP).toDouble())
+        encoder.encodeDouble(value.setScale(5).toDouble())
     }
 
     override fun deserialize(decoder: Decoder): BigDecimal {
