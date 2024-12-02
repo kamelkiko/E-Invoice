@@ -3,15 +3,27 @@ package data.gateway.local
 import data.util.getData
 import domain.entity.*
 import domain.gateway.IReceiptGateway
+import domain.gateway.local.ILocalSetupStoreGateway
 import domain.util.EmptyDataException
 import domain.util.NotFoundException
 import domain.util.UnknownErrorException
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import java.math.BigDecimal
 
-class LocalReceiptGateway : IReceiptGateway {
+class LocalReceiptGateway(
+    private val localSetupStoreGateway: ILocalSetupStoreGateway,
+) : IReceiptGateway {
+    private val _setupStore = CoroutineScope(Dispatchers.IO).async {
+        localSetupStoreGateway.getSetupStore()
+    }
+
     override suspend fun getAllReceipts(storeId: String, dateFrom: String, dateTo: String): List<Receipt> {
         return try {
             val list = mutableListOf<Receipt>()
+            val setupStore = _setupStore.await()
+            println(setupStore.toString())
             val data = getData(
                 "SELECT \n" +
                         "    pd.INVC_ID,\n" +
@@ -89,7 +101,7 @@ class LocalReceiptGateway : IReceiptGateway {
                         ItemData(
                             description = row["description"]?.toString() ?: "",
                             itemType = row["itemType"]?.toString() ?: "",
-                            itemCode = row["itemCode"]?.toString()?:"",
+                            itemCode = row["itemCode"]?.toString() ?: "",
                             unitType = row["unitType"]?.toString() ?: "",
                             quantity = row["quantity"]?.toString()?.toBigDecimalOrNull() ?: BigDecimal(0.0),
                             unitPrice = row["unitPrice"]?.toString()?.toBigDecimalOrNull() ?: BigDecimal(0.0),
@@ -134,24 +146,24 @@ class LocalReceiptGateway : IReceiptGateway {
                                 typeVersion = firstRow["typeVersion"]?.toString() ?: "",
                             ),
                             seller = Seller(
-                                rin = "537315942",
-                                companyTradeName = "شركه حجى للمطاعم",
-                                branchCode = "1",
+                                rin = setupStore.rin,
+                                companyTradeName = setupStore.companyTradeName,
+                                branchCode = setupStore.branchCode,
                                 branchAddress = BranchAddress(
-                                    country = "EG",
-                                    governate = "Cairo",
-                                    regionCity = "Heliopolis",
-                                    street = "4 Al Badia St. - Al Thawra St. - Heliopolis",
-                                    buildingNumber = "1",
-                                    postalCode = "1",
-                                    floor = "1",
-                                    room = "1",
-                                    landmark = "",
-                                    additionalInformation = "",
+                                    country = setupStore.country,
+                                    governate = setupStore.governance,
+                                    regionCity = setupStore.regionCity,
+                                    street = setupStore.street,
+                                    buildingNumber = setupStore.buildingNumber,
+                                    postalCode = setupStore.postalCode,
+                                    floor = setupStore.floor,
+                                    room = setupStore.room,
+                                    landmark = setupStore.landmark,
+                                    additionalInformation = setupStore.additionalInformation,
                                 ),
-                                deviceSerialNumber = "PSH71206",
-                                syndicateLicenseNumber = "",
-                                activityCode = "5610",
+                                deviceSerialNumber = setupStore.deviceSerialNumber,
+                                syndicateLicenseNumber = setupStore.syndicateLicenseNumber,
+                                activityCode = setupStore.activityCode,
                             ),
                             buyer = Buyer(
                                 type = firstRow["BuyerType"]?.toString() ?: "",

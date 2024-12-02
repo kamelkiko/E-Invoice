@@ -6,6 +6,7 @@ import data.remote.model.auth.AuthResponse
 import data.util.getData
 import domain.gateway.IAuthGateway
 import domain.gateway.local.ILocalConfigurationGateway
+import domain.gateway.local.ILocalSetupStoreGateway
 import domain.util.*
 import io.ktor.client.*
 import io.ktor.client.call.*
@@ -16,7 +17,8 @@ import io.ktor.util.*
 
 class AuthGateway(
     client: HttpClient,
-    private val localConfigurationGateway: ILocalConfigurationGateway
+    private val localConfigurationGateway: ILocalConfigurationGateway,
+    private val localSetupStoreGateway: ILocalSetupStoreGateway,
 ) : IAuthGateway,
     BaseGateway(client) {
     @OptIn(InternalAPI::class)
@@ -60,15 +62,17 @@ class AuthGateway(
     override suspend fun getStoreCardEntails(storeId: String): StoreAuth {
         return try {
             val list = mutableListOf<StoreAuth>()
+            val setupStore = localSetupStoreGateway.getSetupStore()
+            println(setupStore.toString())
             val data = getData("select * from dbo.Store")
             if (data.isSuccess) {
                 data.getOrNull()?.forEach { row ->
                     list.add(
                         StoreAuth(
-                            posSerial = "PSH71206",
-                            posOsVersion = "Windows",
-                            clientId = "ba3f5560-5608-4c55-923d-917cc2966e5a",
-                            clientSecret = "195a5190-d9ce-422c-98dc-bc30b4885a21"
+                            posSerial = setupStore.posSerial,
+                            posOsVersion = setupStore.posOsVersion,
+                            clientId = setupStore.clientId,
+                            clientSecret = setupStore.clientSecret
                         )
                     )
                 } ?: throw EmptyDataException("Empty store")
