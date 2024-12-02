@@ -202,6 +202,17 @@ object MainContainer : Screen {
                     itemHeight(it.boundsInParent().height)
                 }
             )
+      //  if (AppConstants.isAdmin)
+            TabNavigationItem(
+                tab = SetupTab,
+                selectedIconResource = Res.drawable.ic_admin,
+                unSelectedIconResource = Res.drawable.ic_admin,
+                mainMenuIsExpanded = mainMenuIsExpanded,
+                sideBarUnexpandedWidth = sideBarUnexpandedWidthInKms,
+                modifier = Modifier.onGloballyPositioned {
+                    itemHeight(it.boundsInParent().height)
+                }
+            )
 
     }
 

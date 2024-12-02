@@ -58,4 +58,5 @@ data class English(
     override val empty: String = "Empty",
     override val accountUpdated: String = "Account updated successfully",
     override val uuid: String = "UUID",
+    override val setup: String = "Setup",
 ) : IStringResources

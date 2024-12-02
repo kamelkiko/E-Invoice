@@ -9,6 +9,7 @@ import presentation.screen.receipts.ReceiptsListScreen
 import presentation.screen.search.SearchScreen
 import presentation.screen.settings.SettingsScreen
 import presentation.screen.history.HistoryScreen
+import presentation.screen.setup.SetupScreen
 import resource.Resources
 
 object ListReceiptsTab : Tab {
@@ -62,5 +63,19 @@ object SettingsTab : Tab {
     @Composable
     override fun Content() {
         Navigator(screen = SettingsScreen())
+    }
+}
+
+object SetupTab : Tab {
+
+    override val options: TabOptions
+        @Composable get() {
+            val title = Resources.strings.setup
+            return remember { TabOptions(index = 4u, title = title) }
+        }
+
+    @Composable
+    override fun Content() {
+        Navigator(screen = SetupScreen())
     }
 }

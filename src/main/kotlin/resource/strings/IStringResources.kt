@@ -14,6 +14,7 @@ interface IStringResources {
     val receipts: String
     val search: String
     val settings: String
+    val setup: String
     val history: String
     //endregion user
 

@@ -6,6 +6,7 @@ import data.gateway.fake.FakeLogoutGateway
 import data.gateway.local.LocalConfigurationGateway
 import data.gateway.local.LocalReceiptGateway
 import data.gateway.local.LocalUserGateway
+import data.gateway.local.LocalSetupStoreGateway
 import data.gateway.local.StoresGateway
 import data.gateway.remote.GetReceiptDetails
 import data.gateway.remote.SendReceiptGateway
@@ -13,6 +14,7 @@ import domain.gateway.IAuthGateway
 import domain.gateway.IReceiptGateway
 import domain.gateway.IStoresGateway
 import domain.gateway.local.ILocalConfigurationGateway
+import domain.gateway.local.ILocalSetupStoreGateway
 import domain.gateway.local.ILocalUserGateway
 import domain.gateway.remote.IGetReceiptDetails
 import domain.gateway.remote.ILoginGateway
@@ -28,6 +30,7 @@ val gatewayModule = module {
     singleOf(::FakeLogoutGateway) bind ILogoutGateway::class
     singleOf(::LocalReceiptGateway) bind IReceiptGateway::class
     singleOf(::LocalUserGateway) bind ILocalUserGateway::class
+    singleOf(::LocalSetupStoreGateway) bind ILocalSetupStoreGateway::class
     singleOf(::AuthGateway) bind IAuthGateway::class
     singleOf(::StoresGateway) bind IStoresGateway::class
     singleOf(::SendReceiptGateway) bind ISendReceiptGateway::class

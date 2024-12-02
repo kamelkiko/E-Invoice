@@ -1,0 +1,25 @@
+package domain.entity
+
+data class StoreSetup(
+    val id:String,
+    val rin: String,
+    val companyTradeName: String,
+    val branchCode: String,
+    val country: String,
+    val governance: String,
+    val regionCity: String,
+    val street: String,
+    val buildingNumber: String,
+    val postalCode: String,
+    val floor: String,
+    val room: String,
+    val landmark: String,
+    val additionalInformation: String,
+    val deviceSerialNumber: String,
+    val syndicateLicenseNumber: String,
+    val activityCode: String,
+    val posSerial: String,
+    val posOsVersion: String,
+    val clientId: String,
+    val clientSecret: String,
+)

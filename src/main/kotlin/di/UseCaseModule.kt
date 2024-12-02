@@ -10,6 +10,7 @@ val useCaseModule = module {
     factoryOf(::ManageReceiptUseCase)
     factoryOf(::AdminSystemUseCase)
     factoryOf(::ManageUserUseCase)
+    factoryOf(::ManageSetupStoreUseCase)
     factoryOf(::CreateTokenUseCase)
     factoryOf(::GetIsLoggedInUseCase)
     factoryOf(::GetAllStoresUseCase)

@@ -89,7 +89,7 @@ class LocalReceiptGateway : IReceiptGateway {
                         ItemData(
                             description = row["description"]?.toString() ?: "",
                             itemType = row["itemType"]?.toString() ?: "",
-                            itemCode = "EG-537315942-25162411",
+                            itemCode = row["itemCode"]?.toString()?:"",
                             unitType = row["unitType"]?.toString() ?: "",
                             quantity = row["quantity"]?.toString()?.toBigDecimalOrNull() ?: BigDecimal(0.0),
                             unitPrice = row["unitPrice"]?.toString()?.toBigDecimalOrNull() ?: BigDecimal(0.0),

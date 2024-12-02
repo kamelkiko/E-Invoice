@@ -58,4 +58,5 @@ data class Arabic(
     override val empty: String = "لا يوجد بيانات",
     override val accountUpdated: String = "تم تعديل الحساب بنجاح",
     override val uuid: String = "الرقم الفريد",
+    override val setup: String = "تسطيب",
 ) : IStringResources

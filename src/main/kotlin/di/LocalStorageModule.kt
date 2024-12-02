@@ -1,6 +1,7 @@
 package di
 
 import data.local.model.AppConfigurationCollection
+import data.local.model.StoreCollection
 import data.local.model.UserCollection
 import io.realm.kotlin.Realm
 import io.realm.kotlin.RealmConfiguration
@@ -12,6 +13,7 @@ val localStorageModule = module {
             schema = setOf(
                 UserCollection::class,
                 AppConfigurationCollection::class,
+                StoreCollection::class,
             )
         ).compactOnLaunch().deleteRealmIfMigrationNeeded().build()
     }
