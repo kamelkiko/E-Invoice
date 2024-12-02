@@ -23,7 +23,6 @@ class LocalReceiptGateway(
         return try {
             val list = mutableListOf<Receipt>()
             val setupStore = _setupStore.await()
-            println(setupStore.toString())
             val data = getData(
                 "SELECT \n" +
                         "    pd.INVC_ID,\n" +

@@ -202,7 +202,7 @@ object MainContainer : Screen {
                     itemHeight(it.boundsInParent().height)
                 }
             )
-      //  if (AppConstants.isAdmin)
+        if (AppConstants.isAdmin)
             TabNavigationItem(
                 tab = SetupTab,
                 selectedIconResource = Res.drawable.ic_admin,

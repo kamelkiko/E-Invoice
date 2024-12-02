@@ -63,7 +63,6 @@ class AuthGateway(
         return try {
             val list = mutableListOf<StoreAuth>()
             val setupStore = localSetupStoreGateway.getSetupStore()
-            println(setupStore.toString())
             val data = getData("select * from dbo.Store")
             if (data.isSuccess) {
                 data.getOrNull()?.forEach { row ->
