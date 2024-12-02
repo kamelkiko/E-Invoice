@@ -102,24 +102,47 @@ class LocalReceiptGateway(
                             itemType = row["itemType"]?.toString() ?: "",
                             itemCode = row["itemCode"]?.toString() ?: "",
                             unitType = row["unitType"]?.toString() ?: "",
-                            quantity = row["quantity"]?.toString()?.toBigDecimalOrNull() ?: BigDecimal(0.0),
-                            unitPrice = row["unitPrice"]?.toString()?.toBigDecimalOrNull() ?: BigDecimal(0.0),
+                            quantity = row["quantity"]?.toString()?.toBigDecimalOrNull()
+                                ?.setScale(5, BigDecimal.ROUND_HALF_UP)
+                                ?: BigDecimal(0.0),
+                            unitPrice = row["unitPrice"]?.toString()?.toBigDecimalOrNull()
+                                ?.setScale(5, BigDecimal.ROUND_HALF_UP) ?: BigDecimal(
+                                0.0
+                            ),
                             internalCode = row["internalCode"]?.toString() ?: "",
-                            totalSale = row["totalSale"]?.toString()?.toBigDecimalOrNull() ?: BigDecimal(0.0),
-                            netSale = row["netSale"]?.toString()?.toBigDecimalOrNull() ?: BigDecimal(0.0),
-                            total = row["total"]?.toString()?.toBigDecimalOrNull() ?: BigDecimal(0.0),
+                            totalSale = row["totalSale"]?.toString()?.toBigDecimalOrNull()
+                                ?.setScale(5, BigDecimal.ROUND_HALF_UP) ?: BigDecimal(
+                                0.0
+                            ),
+                            netSale = row["netSale"]?.toString()?.toBigDecimalOrNull()
+                                ?.setScale(5, BigDecimal.ROUND_HALF_UP) ?: BigDecimal(0.0),
+                            total = row["total"]?.toString()?.toBigDecimalOrNull()
+                                ?.setScale(5, BigDecimal.ROUND_HALF_UP)
+                                ?: BigDecimal(0.0),
                             itemDiscountData = emptyList(),
                             commercialDiscountData = listOf(
                                 CommercialDiscountData(
-                                    amount = BigDecimal(0.0),
+                                    amount = row["commercialDiscountData"]?.toString()?.toBigDecimalOrNull()
+                                        ?.setScale(5, BigDecimal.ROUND_HALF_UP)
+                                        ?: BigDecimal(0.0),
                                     description = "خصم",
-                                    rate = 0.0
+                                    rate = calculateDiscountPercentage(
+                                        row["totalSale"]?.toString()?.toBigDecimalOrNull()
+                                            ?.setScale(5, BigDecimal.ROUND_HALF_UP) ?: BigDecimal(
+                                            0.0
+                                        ),
+                                        row["commercialDiscountData"]?.toString()?.toBigDecimalOrNull()
+                                            ?.setScale(5, BigDecimal.ROUND_HALF_UP)
+                                            ?: BigDecimal(0.0)
+                                    )
                                 )
                             ),
                             taxableItems = listOf(
                                 TaxableItem(
                                     taxType = row["Tax_Type"]?.toString() ?: "",
-                                    amount = row["Tax"]?.toString()?.toBigDecimalOrNull() ?: BigDecimal(0.0),
+                                    amount = row["Tax"]?.toString()?.toBigDecimalOrNull()
+                                        ?.setScale(5, BigDecimal.ROUND_HALF_UP)
+                                        ?: BigDecimal(0.0),
                                     subType = row["Tax_SubType"]?.toString() ?: "",
                                     rate = row["Perc_Tax"]?.toString()?.toDoubleOrNull() ?: 0.0
                                 )
@@ -128,6 +151,7 @@ class LocalReceiptGateway(
                     }
                     list.add(
                         Receipt(
+                           // id = invoiceId,
                             header = Header(
                                 dateTimeIssued = firstRow["dateTimeIssued"]?.toString() ?: "",
                                 receiptNumber = firstRow["Recipt_No"]?.toString() ?: "",
@@ -171,16 +195,24 @@ class LocalReceiptGateway(
                                 mobileNumber = firstRow["BuyerMobileNumber"]?.toString() ?: "",
                             ),
                             itemData = items,
-                            totalSales = firstRow["totalSales"]?.toString()?.toBigDecimalOrNull() ?: BigDecimal(0.0),
+                            totalSales = firstRow["totalSales"]?.toString()?.toBigDecimalOrNull()
+                                ?.setScale(5, BigDecimal.ROUND_HALF_UP)
+                                ?: BigDecimal(0.0),
                             totalCommercialDiscount = firstRow["totalCommercialDiscount"]?.toString()
                                 ?.toBigDecimalOrNull() ?: BigDecimal(0.0),
-                            netAmount = firstRow["netAmount"]?.toString()?.toBigDecimalOrNull() ?: BigDecimal(0.0),
+                            netAmount = firstRow["netAmount"]?.toString()?.toBigDecimalOrNull()
+
+                                ?: BigDecimal(0.0),
                             feesAmount = firstRow["feesAmount"]?.toString()?.toDoubleOrNull() ?: 0.0,
-                            totalAmount = firstRow["totalAmount"]?.toString()?.toBigDecimalOrNull() ?: BigDecimal(0.0),
+                            totalAmount = firstRow["totalAmount"]?.toString()?.toBigDecimalOrNull()
+                                ?.setScale(5, BigDecimal.ROUND_HALF_UP)
+                                ?: BigDecimal(0.0),
                             taxTotals = listOf(
                                 TaxTotal(
                                     taxType = firstRow["Tax_Type"]?.toString() ?: "",
-                                    amount = firstRow["TotalTax"]?.toString()?.toBigDecimalOrNull() ?: BigDecimal(0.0),
+                                    amount = firstRow["TotalTax"]?.toString()?.toBigDecimalOrNull()
+                                        ?.setScale(5, BigDecimal.ROUND_HALF_UP)
+                                        ?: BigDecimal(0.0),
                                 )
                             ),
                             paymentMethod = "C",
@@ -192,5 +224,11 @@ class LocalReceiptGateway(
         } catch (e: Exception) {
             throw UnknownErrorException(e.message)
         }
+    }
+
+    private fun calculateDiscountPercentage(originalPrice: BigDecimal, discountPrice: BigDecimal): Double {
+        if (originalPrice.toDouble() == 0.0) return 0.0
+        val result = (discountPrice.toDouble() / originalPrice.toDouble()) * 100.0
+        return if (result.isNaN()) 0.0 else result
     }
 }

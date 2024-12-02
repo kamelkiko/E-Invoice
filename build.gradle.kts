@@ -83,11 +83,11 @@ compose.desktop {
         nativeDistributions {
             targetFormats(TargetFormat.Exe)
             packageName = "E-Receipt"
-            packageVersion = "1.0.0"
+            packageVersion = "1.0.4"
             windows {
-                packageVersion = "1.0.0"
-                msiPackageVersion = "1.0.0"
-                exePackageVersion = "1.0.0"
+                packageVersion = "1.0.4"
+                msiPackageVersion = "1.0.4"
+                exePackageVersion = "1.0.4"
                 includeAllModules = true
                 vendor = "AbApps"
                 description = "E-Receipt App"
